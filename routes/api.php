@@ -25,16 +25,22 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{id}', [PostController::class,'show']);
-Route::post('/posts/',[PostController::class, 'store'])->name('posts.create');
+
+Route::group(['middleware'=>['auth']], function(){
+
+Route::post('/posts/',
+[PostController::class, 'store'])->name('posts.create');
 Route::post('/posts/{post}',[PostController::class, 'update']);
 Route::delete('/posts/{post}', [PostController::class, 'destroy']);
 Route::post('/posts/{post}/comments',[CommentController::class,'store']);
 Route::delete('/comments/{comment}',[CommentController::class,'destory']);
 
-
-Route::post('/register', [RegisterController::class,'register']);
-Route::post('/login/',[LoginController::class,'login']);
-Route::post('/logout',[LogoutController::class,'logout']);
+ Route::post('/logout',[LogoutController::class,'logout']);
 Route::post('/refresh',[LogoutController::class,'refreshToken']);
 Route::get('/profile',[LoginController::class, 'getMyProfile']);
 Route::get('/my-posts/{user_id}',[PostController::class,'getMyPosts']);
+});
+
+Route::post('/register', [RegisterController::class,'register']);
+Route::post('/login/',[LoginController::class,'login']);
+
